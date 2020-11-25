@@ -3,6 +3,9 @@ plugins {
     id 'application'
 }
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 repositories {
     mavenCentral()
 }
@@ -14,3 +17,13 @@ dependencies {
 }
 
 mainClassName = 'iconloop.client.SampleClient'
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+
+//    from {
+//        configurations.compile.collect {it.isDirectory()? it: zipTree(it)}
+//    }
+}

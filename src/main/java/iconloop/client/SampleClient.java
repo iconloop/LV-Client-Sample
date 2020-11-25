@@ -1,7 +1,9 @@
 package iconloop.client;
+import iconloop.client.menu.*;
 
 public class SampleClient {
     public static void main(String[] args) {
-        System.out.println("Test....");
+        Menu menu = new Menu();
+        menu.showMenu();
     }
 }
