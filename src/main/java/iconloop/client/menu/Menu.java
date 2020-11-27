@@ -37,13 +37,13 @@ public class Menu {
     public void managerMenu() {
         List<String> menuList = new ArrayList<>();
         menuList.add("1. Request Auth");
-        menuList.add("2. Request Auth");
+
+        CommunicateManager cmManager = new CommunicateManager();
         boolean isLoop = true;
         while(isLoop) {
             switch (showMenu(menuList)) {
-                case 2:
-                    break;
                 case 1:
+                    cmManager.requestIssueVC();
                     break;
                 case 0:
                     isLoop = false;

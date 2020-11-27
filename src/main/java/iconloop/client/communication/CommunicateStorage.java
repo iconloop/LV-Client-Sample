@@ -15,8 +15,6 @@ import java.nio.charset.Charset;
 
 public class CommunicateStorage extends Communicate{
     private static final String url = "http://127.0.0.1:8100/vault";
-    private static final String sharingInfo = "분한을 위한 데이터 (....!!)";
-    private static final Clue clue = new Clue();
 
     public void requestToken() {
         JsonObject raw_token_request = new JsonObject();
