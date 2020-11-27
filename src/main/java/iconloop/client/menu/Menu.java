@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Menu {
-    List<String> saveClues = new ArrayList<>();
-    String inputSharedString;
+    private int storageNumber = 3;
 
     public void selectedMenu() {
         List<String> menuList = new ArrayList<>();
@@ -36,14 +35,18 @@ public class Menu {
 
     public void managerMenu() {
         List<String> menuList = new ArrayList<>();
-        menuList.add("1. Request Auth");
+        menuList.add("1. requestIssueVID");
+        menuList.add("2. Request Issue VC");
 
         CommunicateManager cmManager = new CommunicateManager();
         boolean isLoop = true;
         while(isLoop) {
             switch (showMenu(menuList)) {
-                case 1:
+                case 2:
                     cmManager.requestIssueVC();
+                    break;
+                case 1:
+                    cmManager.requestIssueVID();
                     break;
                 case 0:
                     isLoop = false;
@@ -82,17 +85,24 @@ public class Menu {
     public void dataSharing() {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Input Sharing Data >> ");
+        System.out.print("\n\nInput Sharing Data >> ");
         String sharingInfo = sc.next();
         Clue clue = new Clue();
         CommunicateStorage cmStorage = new CommunicateStorage();
 
-        String[] clues = clue.makeClue(3, 2, sharingInfo.getBytes(Charset.forName("UTF-8")));
+        String[] clues = clue.makeClue(storageNumber, 2, sharingInfo.getBytes(Charset.forName("UTF-8")));
 
+        int idx = 0;
         for(String clueString : clues) {
-            System.out.println("Clue : " + clueString);
-            saveClues.add(clueString);
-            cmStorage.requestStoreClue(clueString);
+            String vID = String.format("vID%d", idx++);
+            System.out.println(vID + " is " + " : " + clueString);
+        }
+
+        idx = 0;
+        System.out.println("\nRequest.....");
+        for(String clueString : clues) {
+            String vID = String.format("vID%d", idx++);
+            cmStorage.requestStoreClue(clueString, vID);
         }
     }
 
@@ -100,21 +110,18 @@ public class Menu {
         Clue clue = new Clue();
         CommunicateStorage cmStorage = new CommunicateStorage();
 
-        // TODO : Using Storage Information.
-        // Fixme : Sample Code
-        int storage_num = 3;
-
-        String[] clues = new String[storage_num];
-        int idx = 0;
-        for(String clueString : saveClues) {
-            // TODO : Using really response clue data.
-            cmStorage.requestToken();
-            clues[idx++] = clueString;
+        String[] clues = new String[storageNumber];
+        System.out.println("\nRequest.....");
+        for(int i=0; i<storageNumber; i++) {
+            String resultClue = cmStorage.requestClue(String.format("vID%d", i));
+            clues[i] = resultClue.substring(1, resultClue.length()-1);
+            System.out.println("");
         }
 
-        byte[] reconstructed = clue.reconstruct(3, 2, clues);
+        byte[] reconstructed = clue.reconstruct(storageNumber, 2, clues);
         String reconstructedStr = new String(reconstructed, Charset.forName("UTF-8"));
-        System.out.println(reconstructedStr);
+
+        System.out.println("Reconstructe Data \n\t- " + reconstructedStr);
     }
 
     public int showMenu(List<String> menuList) {
