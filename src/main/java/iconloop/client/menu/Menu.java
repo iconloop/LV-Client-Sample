@@ -11,7 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Menu {
-    private int storageNumber = 3;
+    private final String[] storageList = {
+            "http://127.0.0.1:8100/vault",
+            "http://127.0.0.1:8200/vault",
+            "http://127.0.0.1:8300/vault"
+    };
+
+    private final int storageNumber = storageList.length;
+    private String vID = "";
 
     public void selectedMenu() {
         List<String> menuList = new ArrayList<>();
@@ -40,13 +47,16 @@ public class Menu {
 
         CommunicateManager cmManager = new CommunicateManager();
         boolean isLoop = true;
+
         while(isLoop) {
             switch (showMenu(menuList)) {
                 case 2:
-                    cmManager.requestIssueVC();
+                    cmManager.requestIssueVC(vID);
                     break;
                 case 1:
-                    cmManager.requestIssueVID();
+                    vID = cmManager.requestIssueVID();
+                    vID = vID.substring(1, vID.length()-1);
+                    System.out.println(vID);
                     break;
                 case 0:
                     isLoop = false;
@@ -83,45 +93,49 @@ public class Menu {
     }
 
     public void dataSharing() {
+        if( "".equals(vID) ) {
+            System.out.println("It must be need vID. It process to get vID.");
+            return ;
+        }
+
         Scanner sc = new Scanner(System.in);
 
         System.out.print("\n\nInput Sharing Data >> ");
         String sharingInfo = sc.next();
         Clue clue = new Clue();
-        CommunicateStorage cmStorage = new CommunicateStorage();
-
         String[] clues = clue.makeClue(storageNumber, 2, sharingInfo.getBytes(Charset.forName("UTF-8")));
 
-        int idx = 0;
-        for(String clueString : clues) {
-            String vID = String.format("vID%d", idx++);
-            System.out.println(vID + " is " + " : " + clueString);
-        }
-
-        idx = 0;
         System.out.println("\nRequest.....");
-        for(String clueString : clues) {
-            String vID = String.format("vID%d", idx++);
-            cmStorage.requestStoreClue(clueString, vID);
+        for(int i=0; i<storageNumber; ++i) {
+            System.out.println(">>> " + storageList[i]);
+            CommunicateStorage cmStorage = new CommunicateStorage(storageList[i]);
+            cmStorage.requestStoreClue(clues[i], vID);
+            System.out.println("\n\n");
         }
     }
 
     public void reconstruct() {
+        if( "".equals(vID) ) {
+            System.out.println("It must be need vID. It process to get vID.");
+            return ;
+        }
+
         Clue clue = new Clue();
-        CommunicateStorage cmStorage = new CommunicateStorage();
 
         String[] clues = new String[storageNumber];
         System.out.println("\nRequest.....");
-        for(int i=0; i<storageNumber; i++) {
-            String resultClue = cmStorage.requestClue(String.format("vID%d", i));
+        for(int i=0; i<storageNumber; ++i) {
+            System.out.println(">>> " + storageList[i]);
+            CommunicateStorage cmStorage = new CommunicateStorage(storageList[i]);
+            String resultClue = cmStorage.requestClue(vID);
             clues[i] = resultClue.substring(1, resultClue.length()-1);
-            System.out.println("");
+            System.out.println("\n\n");
         }
 
         byte[] reconstructed = clue.reconstruct(storageNumber, 2, clues);
         String reconstructedStr = new String(reconstructed, Charset.forName("UTF-8"));
 
-        System.out.println("Reconstructe Data \n\t- " + reconstructedStr);
+        System.out.println("Reconstruct Data \n\t- " + reconstructedStr);
     }
 
     public int showMenu(List<String> menuList) {
@@ -138,7 +152,12 @@ public class Menu {
             System.out.println("0. Quit");
             System.out.println("==========================================");
             System.out.print("Input Number >> ");
-            selected_number = sc.nextInt();
+            try {
+                selected_number = sc.nextInt();
+            }catch(Exception e){
+                System.out.println("Not menu....");
+                sc.next();
+            }
         }
 
         return selected_number;

@@ -4,8 +4,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.Gson;
 
 public class CommunicateStorage extends Communicate {
-    private static final String url = "http://127.0.0.1:8100/vault";
+    String url = "";
+    public CommunicateStorage() {
+        this.url = "http://127.0.0.1:8100/vault";
+    }
 
+    public CommunicateStorage(String url) {
+        this.url = url;
+    }
     public void requestToken() {
         JsonObject raw_token_request = new JsonObject();
         raw_token_request.addProperty("type", "TOKEN_REQUEST");
@@ -13,7 +19,7 @@ public class CommunicateStorage extends Communicate {
         raw_token_request.addProperty("vC", "header.payload.signature");
 
         try {
-            System.out.println(communicate(url, raw_token_request));
+            prettyPrint(communicate(url, raw_token_request));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -28,7 +34,7 @@ public class CommunicateStorage extends Communicate {
         raw_token_request.addProperty("sequence", 0);
 
         try {
-            System.out.println(communicate(url, raw_token_request));
+            prettyPrint(communicate(url, raw_token_request));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,6 +54,7 @@ public class CommunicateStorage extends Communicate {
             e.printStackTrace();
         }
 
+        prettyPrint(result);
         JsonObject convertedObject = new Gson().fromJson(result, JsonObject.class);
         return convertedObject.get("clue").toString();
     }

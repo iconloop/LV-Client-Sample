@@ -1,5 +1,7 @@
 package iconloop.client.communication;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,6 +12,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 public class Communicate {
     public String communicate(String url, JsonObject token_request) throws Exception{
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        String json = gson.toJson(token_request);
+        System.out.println(json);
+
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Authorization", token_request.toString());
 
@@ -22,5 +29,13 @@ public class Communicate {
         } else {
             throw new Exception("response is error : " + response.getStatusLine().getStatusCode());
         }
+    }
+
+    public void prettyPrint(String jsonStr) {
+        JsonObject convertedObject = new Gson().fromJson(jsonStr, JsonObject.class);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        String json = gson.toJson(convertedObject);
+        System.out.println(json);
     }
 }

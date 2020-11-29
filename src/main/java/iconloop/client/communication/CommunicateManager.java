@@ -6,9 +6,9 @@ import com.google.gson.Gson;
 public class CommunicateManager extends Communicate {
     private static final String url = "http://127.0.0.1:8000/vault";
 
-    public void requestIssueVID() {
-        Gson gson = new Gson();
+    public String requestIssueVID() {
         JsonObject raw_token_request = new JsonObject();
+        String result = "";
 
         raw_token_request.addProperty("type", "ISSUE_VID_REQUEST");
         raw_token_request.addProperty("iat", 1606125053);
@@ -20,22 +20,24 @@ public class CommunicateManager extends Communicate {
         raw_token_request.add("auth", auth);
 
         try {
-            System.out.println(communicate(url, raw_token_request));
+            prettyPrint(result = communicate(url, raw_token_request));
         } catch(Exception e) {
             e.printStackTrace();
         }
+
+        JsonObject convertedObject = new Gson().fromJson(result, JsonObject.class);
+        return convertedObject.get("vID").toString();
     }
 
-    public void requestIssueVC() {
-        Gson gson = new Gson();
+    public void requestIssueVC(String vID) {
         JsonObject raw_token_request = new JsonObject();
 
         raw_token_request.addProperty("type", "ISSUE_VC_REQUEST");
         raw_token_request.addProperty("iat", 1606125053);
-        raw_token_request.addProperty("vID", "1oaS-4OUIT7qJeSYyQQCqAX4jXqqPUdo2HrvqRCnzto");
+        raw_token_request.addProperty("vID", vID);
 
         try {
-            System.out.println(communicate(url, raw_token_request));
+            prettyPrint(communicate(url, raw_token_request));
         } catch(Exception e) {
             e.printStackTrace();
         }
