@@ -82,7 +82,7 @@ public class Menu {
                     dataSharing();
                     break;
                 case 1:
-                    cmStorage.requestToken();
+                    requestToken();
                     break;
                 case 0:
                     isLoop = false;
@@ -90,6 +90,16 @@ public class Menu {
             }
         }
 
+    }
+
+    public void requestToken() {
+        System.out.println("\nRequest.....");
+        for(int i=0; i<storageNumber; ++i) {
+            System.out.println(">>> " + storageList[i]);
+            CommunicateStorage cmStorage = new CommunicateStorage(storageList[i]);
+            cmStorage.requestToken();
+            System.out.println("\n\n");
+        }
     }
 
     public void dataSharing() {
