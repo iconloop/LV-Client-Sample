@@ -1,6 +1,6 @@
 # LV-Client-Sample
 
-#Requirements
+# Requirements
 1. **gradle**
 ~~~
 $ brew install gradle
@@ -9,12 +9,12 @@ $ brew install gradle
 2. **Java Version 1.8**
 
 
-###Build
+### Build
 ~~~
 $ gradle build
 ~~~
 
-###Run
+### Run
 ~~~
 $ cd build/libs
 $ java -jar LV-Client-Sample.jar
