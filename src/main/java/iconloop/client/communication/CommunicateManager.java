@@ -1,7 +1,7 @@
 package iconloop.client.communication;
 
-import com.google.gson.JsonObject;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class CommunicateManager extends Communicate {
     private static final String url = "http://127.0.0.1:8000/vault";

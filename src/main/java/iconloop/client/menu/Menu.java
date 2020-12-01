@@ -1,14 +1,13 @@
 package iconloop.client.menu;
 
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.Scanner;
 import iconloop.client.communication.CommunicateManager;
 import iconloop.client.communication.CommunicateStorage;
 import iconloop.client.util.Clue;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Menu {
     private final String[] storageList = {
