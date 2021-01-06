@@ -14,8 +14,16 @@ $ brew install gradle
 $ gradle build
 ~~~
 
-### Run
+### Test Client Run
 ~~~
 $ cd build/libs
-$ java -jar LV-Client-Sample.jar
+$ java -jar LV-Client-Sample.jar -m 0
+~~~
+
+### Command line Run
+
+~~~
+$ cd build/libs
+$ java -jar LV-Client-Sample.jar -t "blahblash" -n 3 -th 2
+$ cat clues.txt
 ~~~
