@@ -32,3 +32,8 @@ hs_err_pid*
 
 # Ignore Gradle build output directory
 build
+
+# ------ Python
+venv
+*.egg-info
+__pycache__
