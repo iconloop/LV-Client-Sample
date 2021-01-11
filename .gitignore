@@ -37,3 +37,8 @@ build
 venv
 *.egg-info
 __pycache__
+
+# Generated files
+clues
+clues_restored.txt
+stored.json
