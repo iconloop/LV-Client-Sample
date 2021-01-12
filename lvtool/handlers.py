@@ -41,7 +41,7 @@ def _handle_store(args):
 
     for clue, storage_info in zip(clues, vid_response_msg["storages"]):
         storage = Storage(storage_info)
-        storage.store_request(clue)
+        storage.store_request(vid_response_msg["vID"], clue)
         storages.append(storage.to_json())
 
     with open(args.output, "w") as f:
@@ -58,7 +58,7 @@ def _handle_read(args):
     gathered_clues = []
 
     for storage in storages:
-        response = storage.clue_request()
+        response = storage.clue_request(vid_response_msg["vID"])
         gathered_clues.append(response["clue"])
 
     with open(args.output, "w") as f:

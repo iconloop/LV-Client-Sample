@@ -124,11 +124,10 @@ class TestScenario:
             self._cek = jwk.JWK.generate(kty="oct")
             self._token = secrets.token_hex()
 
-        def mock_store_request(self, clue):
-            self._vid = secrets.token_hex()  # TODO: format mismatch!
+        def mock_store_request(self, vid, clue):
             self._tag = "0"
 
-        def mock_clue_request(self):
+        def mock_clue_request(self, vid):
             if "8100" in self._endpoint:
                 return {"clue": TestScenario.DUMMY_CLUES[0]}
             elif "8101" in self._endpoint:
@@ -234,7 +233,6 @@ class TestScenario:
                         "y": "ipu-riOUjZPzF3ybrjO3TqnDyXqfsi35oXcQk-ORXIA",
                     },
                     "cek": {"kty": "oct", "k": "AYpUpQpu0OMVUJXhq8DFNw"},
-                    "vid": "5ec99b97fb34c122686e9279b12f2471b7686ce96559fe59ea2b6c37976151cf",
                     "tag": "0",
                 },
                 {
@@ -247,7 +245,6 @@ class TestScenario:
                         "y": "-ifyo0CxSghFaDma0tSyAGOeTXoay3N64LcqYnFpAMY",
                     },
                     "cek": {"kty": "oct", "k": "jOZN4o-hrdJfWHGiIBGGNg"},
-                    "vid": "610a93ddc471502d0f36b60c6ab31cd9c5477f5048dfd74b181d27259eb490ec",
                     "tag": "0",
                 },
                 {
@@ -260,7 +257,6 @@ class TestScenario:
                         "y": "pcJyYIV2SrJIbEXoT0J6pFQlx1qIrxB9Oi74CYqmxbE",
                     },
                     "cek": {"kty": "oct", "k": "gGvj2YUVmOjOfO0xBfH5_g"},
-                    "vid": "31fb102bf589a5a2a355801516ace50826b64dca01d3c6e9e0759e83d49d7e60",
                     "tag": "0",
                 },
             ],

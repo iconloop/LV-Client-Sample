@@ -99,7 +99,6 @@ class Storage:
         self._token: Optional[str] = storage_info.get("token")
         cek = storage_info.get("cek")
         self._cek: Optional[jwk.JWK] = jwk.JWK(**cek) if cek else None
-        self._vid: Optional[str] = storage_info.get("vid")
         self._tag: Optional[str] = storage_info.get("tag")
 
     def _send(self, jwe_token):
@@ -124,34 +123,32 @@ class Storage:
 
         return token_response
 
-    def store_request(self, clue) -> dict:
+    def store_request(self, vid, clue) -> dict:
         assert self._token
         assert self._cek
 
         payload = {
             "type": "STORE_REQUEST",
             "iat": 1111,
-            "vID": "WriteMyClueByUsingThisAsAkey",
+            "vID": vid,
             "clue": clue
         }
         jwe_token = encrypt_jwe_with_cek(self._cek, payload, kid=self._token)
         tokenized_response = self._send(jwe_token)
         header, store_response = decrypt_jwe_with_cek(tokenized_response, self._cek)
 
-        self._vid = store_response["vID"]
         self._tag = store_response["tag"]
 
         return store_response
 
-    def clue_request(self) -> dict:
+    def clue_request(self, vid) -> dict:
         assert self._token
         assert self._cek
-        assert self._vid
 
         payload = {
             "type": "CLUE_REQUEST",
             "iat": 1111,
-            "vID": self._vid
+            "vID": vid
         }
         jwe_token = encrypt_jwe_with_cek(self._cek, payload, kid=self._token)
         tokenized_response = self._send(jwe_token)
@@ -166,8 +163,6 @@ class Storage:
             "key": self._key.export_public(as_dict=True),
             "cek": self._cek.export_symmetric(as_dict=True)
         }
-        if self._vid:
-            obj["vid"] = self._vid
         if self._tag:
             obj["tag"] = self._tag
 
