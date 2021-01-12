@@ -325,3 +325,19 @@ class TestScenario:
 
         # THEN output file should be exist
         assert Path(self.RESTORE_OUTPUT).exists()
+
+    def test_clue_request_without_store_clues(self, mock_storage_server):
+        # GIVEN I already finished authentication with storages
+        self._create_tokens_output()
+
+        # AND I created CLI instructions
+        parser = init_parsers()
+        args = parser.parse_args(
+            [Commands.RESTORE, "-f", self.TOKENS_OUTPUT, "-o", self.RESTORE_OUTPUT]
+        )
+
+        # WHEN I call it
+        handlers[Commands.RESTORE](args)
+
+        # THEN output file should be exist
+        assert Path(self.RESTORE_OUTPUT).exists()

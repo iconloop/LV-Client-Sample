@@ -150,6 +150,9 @@ class Storage:
             "iat": 1111,
             "vID": vid
         }
+        if self._tag:
+            payload["tag"] = self._tag
+
         jwe_token = encrypt_jwe_with_cek(self._cek, payload, kid=self._token)
         tokenized_response = self._send(jwe_token)
         header, clue_response = decrypt_jwe_with_cek(tokenized_response, self._cek)

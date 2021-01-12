@@ -46,3 +46,12 @@ It provides below features:
 
 ### Getting started
 - `$ lv-tool -h`
+
+OR run testing shell
+
+```
+./run.sh [clue_file_path]  # GetStorages -> TOKEN -> STORE -> READ
+./run.sh                   # GetStorages -> TOKEN -> READ
+```
+
+> Do not use this shell in QA testing. This is a humble script for handy testing
