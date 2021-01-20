@@ -35,6 +35,9 @@ class SampleClient implements Callable<Integer>{
     @Option(names = {"-n", "--number"}, description = "Divided Number")
     private int number = 3;
 
+    @Option(names = {"-e", "--encrypt"}, description = "Encrypt Mode. 0: decrypt, 1: encrypt. default: 1")
+    private int encrypt = 1;
+
     @Override
     public Integer call() throws Exception {
         if (mode == 0) {
@@ -42,7 +45,12 @@ class SampleClient implements Callable<Integer>{
             menu.selectedMenu();
             return 1;
         } else if (mode == 1) {
-            File result = new File("./clues.txt");
+            String result_file_name = "./clues.txt";
+            if(encrypt == 0)
+                result_file_name = "./decrypt.txt";
+
+
+            File result = new File(result_file_name);
 
             try (BufferedWriter out = new BufferedWriter(new FileWriter(result))) {
                 String err_msg = "";
@@ -58,6 +66,17 @@ class SampleClient implements Callable<Integer>{
                     throw new Exception(err_msg);
                 }
 
+                if (encrypt==0 && "".equals(plain_text)) {
+                    err_msg = "Pain Text mode don't support on Decrypt mode. Please use text file option.";
+                    out.write(err_msg);
+                    throw new Exception(err_msg);
+                }
+
+                Clue clue = new Clue();
+
+                String reconstructedStr = "";
+                String[] clues = new String[number];
+
                 if (!"".equals(file_path)) {
                     File include_file = new File(file_path);
                     if (!include_file.exists()) {
@@ -69,22 +88,35 @@ class SampleClient implements Callable<Integer>{
                     BufferedReader in = new BufferedReader((new FileReader(include_file)));
                     String line = "";
                     while ((line = in.readLine()) != null) {
-                        plain_text = String.format("%s\n%s", plain_text, line);
+                        if("".equals(plain_text)){
+                            plain_text = line;
+                        }else{
+                            plain_text = String.format("%s\n%s", plain_text, line);
+                        }
+
                     }
                 }
 
-                Clue clue = new Clue();
-                String[] clues = clue.makeClue(number, thresh_holder, plain_text.getBytes(StandardCharsets.UTF_8));
+                if(encrypt == 1) {
+                    clues = clue.makeClue(number, thresh_holder, plain_text.getBytes(StandardCharsets.UTF_8));
+                    reconstructedStr = new String(clue.reconstruct(number, thresh_holder, clues), StandardCharsets.UTF_8);
+
+                    out.write(String.join("\n", clues));
+                } else {
+                    int index = 0;
+                    for(String clue_str : plain_text.split("\n")) {
+                        clues[index++] = clue_str;
+                    }
+
+                    reconstructedStr = new String(clue.reconstruct(number, thresh_holder, clues), StandardCharsets.UTF_8);
+                    out.write(reconstructedStr);
+                }
+
                 if (print_mode == 1) {
                     System.out.println(String.join("\n", clues));
-
-                    // 복호화 테스트 정보.
-                    byte[] reconstructed = clue.reconstruct(number, thresh_holder, clues);
-                    String reconstructedStr = new String(reconstructed, StandardCharsets.UTF_8);
                     System.out.println(reconstructedStr);
                 }
 
-                out.write(String.join("\n", clues));
                 return 1;
             }
         }
