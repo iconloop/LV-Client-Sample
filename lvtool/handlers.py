@@ -6,12 +6,21 @@ from .interfaces import Manager, Storage
 from .types import Commands
 
 
+def _handle_get_vp(args):
+    output_path = args.output
+
+    manager = Manager(endpoint=args.endpoint)
+    vpr: dict = manager.request_vpr()  # TODO: THIS should contain VPRequest.
+    with open(output_path, "w") as f:
+        f.write(json.dumps(vpr, indent=4))
+
+
 def _handle_get_storages(args):
     output_path = args.output
 
     manager = Manager(endpoint=args.endpoint)
-    # backup_response: dict = manager.request_vpr()  # TODO: THIS should contain VPRequest.
-    vid_response = manager.issue_vid_request()  # TODO: Fill VID Request according to responded VPR!
+    vp = None  # TODO: Make VP by VPR from lv-manager.
+    vid_response = manager.issue_vid_request(vp)  # TODO: Fill VID Request according to responded VPR!
 
     with open(output_path, "w") as f:
         f.write(json.dumps(vid_response, indent=4))
@@ -66,7 +75,8 @@ def _handle_read(args):
 
 
 handlers = {
-    Commands.VPR: _handle_get_storages,
+    Commands.VPR: _handle_get_vp,
+    Commands.VID: _handle_get_storages,
     Commands.TOKEN: _handle_token,
     Commands.STORE: _handle_store,
     Commands.RESTORE: _handle_read,

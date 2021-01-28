@@ -8,6 +8,7 @@ def init_parsers():
     subparsers = parser.add_subparsers(dest="dest")
 
     vpr_request(subparsers.add_parser(Commands.VPR, help=vpr_request.__doc__))
+    vid_request(subparsers.add_parser(Commands.VID, help=vid_request.__doc__))
     auth_token(subparsers.add_parser(Commands.TOKEN, help=auth_token.__doc__))
     write_clues(subparsers.add_parser(Commands.STORE, help=write_clues.__doc__))
     read_clues(subparsers.add_parser(Commands.RESTORE, help=read_clues.__doc__))
@@ -16,9 +17,19 @@ def init_parsers():
 
 
 def vpr_request(parser):
-    """Request VPR and response VP."""
+    """Request VPR."""
     parser.add_argument("-e", "--endpoint", required=True, help="Endpoint of LV Manager.")
-    parser.add_argument("-o", "--output", required=True, help="Output path of results after VP authentication finished")
+    parser.add_argument("-o", "--output", required=True, help="Output path of results after VPR request.")
+
+
+def vid_request(parser):
+    """Request VID and Storages with VP."""
+    parser.add_argument("-e", "--endpoint", required=True, help="Endpoint of LV Manager.")
+    parser.add_argument("-f", "--input", required=True, help="VPR")
+    parser.add_argument("-o",
+                        "--output",
+                        required=True,
+                        help="Output path of results after VP authentication finished.")
 
 
 def auth_token(parser):

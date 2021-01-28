@@ -9,6 +9,24 @@ class LiteVaultClient(HttpUser):
 
     @task(1)
     def vpr(self):
+        """Get VPR
+
+        :return:
+        """
+        def _send(_self: Manager, jwe_token):
+            # print(f'In send jwe_token({jwe_token})')
+            response = self.client.post(f"{_self._endpoint}/vault", headers={
+                "Authorization": jwe_token
+            }, name='VPR_0')
+
+            return response.text[1:-1]  # remove quotes...
+
+        Manager._send = _send
+
+        main(['lv-tool', 'vpr', '-e', 'lv-manager.iconscare.com', '-o', 'vpr.json'])
+
+    @task(1)
+    def vid(self):
         """Get Storages
 
         :return:
@@ -17,13 +35,13 @@ class LiteVaultClient(HttpUser):
             # print(f'In send jwe_token({jwe_token})')
             response = self.client.post(f"{_self._endpoint}/vault", headers={
                 "Authorization": jwe_token
-            }, name='VPR')
+            }, name='VPR_1')
 
             return response.text[1:-1]  # remove quotes...
 
         Manager._send = _send
 
-        main(['lv-tool', 'vpr', '-e', 'lv-manager.iconscare.com', '-o', 'storages.json'])
+        main(['lv-tool', 'vid', '-e', 'lv-manager.iconscare.com', '-f', 'vpr.json', '-o', 'storages.json'])
 
     @task(2)
     def token(self):
@@ -35,7 +53,7 @@ class LiteVaultClient(HttpUser):
             # print(f'In send jwe_token({jwe_token})')
             response = self.client.post(f"{_self._endpoint}/vault", headers={
                 "Authorization": jwe_token
-            }, name='TOKEN')
+            }, name='TOKEN_0')
             assert response.status_code == 200
             return response.text[1:-1]  # remove quotes...
 
@@ -53,7 +71,7 @@ class LiteVaultClient(HttpUser):
             # print(f'In send jwe_token({jwe_token})')
             response = self.client.post(f"{_self._endpoint}/vault", headers={
                 "Authorization": jwe_token
-            }, name='STORE')
+            }, name='STORE_0')
             assert response.status_code == 200
             return response.text[1:-1]  # remove quotes...
 
@@ -71,7 +89,7 @@ class LiteVaultClient(HttpUser):
             # print(f'In send jwe_token({jwe_token})')
             response = self.client.post(f"{_self._endpoint}/vault", headers={
                 "Authorization": jwe_token
-            }, name='READ')
+            }, name='CLUE_0')
             assert response.status_code == 200
             return response.text[1:-1]  # remove quotes...
 
@@ -82,7 +100,8 @@ class LiteVaultClient(HttpUser):
     def on_start(self):
         """Prepare files
         """
-        main(['lv-tool', 'vpr', '-e', 'lv-manager.iconscare.com', '-o', 'storages.json'])
+        main(['lv-tool', 'vpr', '-e', 'lv-manager.iconscare.com', '-o', 'vpr.json'])
+        main(['lv-tool', 'vid', '-e', 'lv-manager.iconscare.com', '-f', 'vpr.json', '-o', 'storages.json'])
         main(['lv-tool', 'token', '-f', 'storages.json', '-o', 'tokens.json'])
         main(['lv-tool', 'store', 'clues', '-f', 'tokens.json', '-o', 'store_output.json'])
         main(['lv-tool', 'read', '-f', 'store_output.json', '-o', 'restored_clues.txt'])
