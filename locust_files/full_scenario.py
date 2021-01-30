@@ -1,3 +1,4 @@
+from assam.jwt import encrypt_jwe, decrypt_jwe_with_cek
 from locust import HttpUser, task, between
 
 from lvtool.__main__ import main
@@ -13,17 +14,56 @@ class LiteVaultClient(HttpUser):
 
         :return:
         """
-        def _send(_self: Manager, jwe_token):
+        def _send(_self: Manager, jwe_token, cek):
             # print(f'In send jwe_token({jwe_token})')
-            response = self.client.post(f"{_self._endpoint}/vault", headers={
-                "Authorization": jwe_token
-            }, name='VPR_0')
+            with self.client.post(f"{_self._endpoint}/vault",
+                                  headers={"Authorization": jwe_token},
+                                  name='VPR_0',
+                                  catch_response=True) as _response:
+                response = _response.text[1:-1]  # remove quotes....
+                header, decrypt_response = decrypt_jwe_with_cek(response, cek)
 
-            return response.text[1:-1]  # remove quotes...
+                # print(f'decrypt_response({decrypt_response})')
+                if decrypt_response['vp_request'] == {}:
+                    _response.failure('There is no VP!')
+
+            return response
+
+        def request_vpr(_self: Manager) -> dict:
+            payload = {
+                "type": "BACKUP_REQUEST",
+                "iat": 1111,
+                "did": "issuer did of phone auth"
+            }
+            jwe_token, cek = encrypt_jwe(_self._key, payload)
+            tokenized_response = _self._send(jwe_token, cek)
+            header, backup_response = decrypt_jwe_with_cek(tokenized_response, cek)
+
+            return backup_response
 
         Manager._send = _send
+        Manager.request_vpr = request_vpr
 
         main(['lv-tool', 'vpr', '-e', 'lv-manager.iconscare.com', '-o', 'vpr.json'])
+
+    # For Load Test.
+    # @task(1)
+    # def vpr(self):
+    #     """Get VPR
+    #
+    #     :return:
+    #     """
+    #     def _send(_self: Manager, jwe_token):
+    #         # print(f'In send jwe_token({jwe_token})')
+    #         response = self.client.post(f"{_self._endpoint}/vault", headers={
+    #             "Authorization": jwe_token
+    #         }, name='VPR_0')
+    #
+    #         return response.text[1:-1]  # remove quotes...
+    #
+    #     Manager._send = _send
+    #
+    #     main(['lv-tool', 'vpr', '-e', 'lv-manager.iconscare.com', '-o', 'vpr.json'])
 
     @task(1)
     def vid(self):
