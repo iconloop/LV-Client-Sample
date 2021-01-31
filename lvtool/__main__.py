@@ -1,4 +1,4 @@
-from lvtool.handlers import handlers
+from lvtool.handlers import Handler
 from lvtool.parsers import init_parsers
 import sys
 
@@ -13,4 +13,4 @@ def main(argv=None):
     sys.argv = argv if argv else sys.argv
     args = parser.parse_args()
 
-    return handlers[args.dest](args)
+    return Handler()(args.dest, args)
