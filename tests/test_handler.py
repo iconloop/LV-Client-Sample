@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 import pytest
 from jwcrypto import jwk
 
-from lvtool.handlers import handlers
+from lvtool.handlers import Handler
 from lvtool.parsers import init_parsers
 from lvtool.types import Commands
 
@@ -272,7 +272,7 @@ class TestScenario:
         args = parser.parse_args([Commands.VPR, "-e", self.MANAGER_ENDPOINT, "-o", self.MANAGER_OUTPUT])
 
         # WHEN I call it
-        handlers[Commands.VPR](args)
+        Handler()(Commands.VPR, args)
 
         # THEN output file should exist
         assert Path(self.MANAGER_OUTPUT).exists()
@@ -288,7 +288,7 @@ class TestScenario:
         )
 
         # WHEN I call it
-        handlers[Commands.TOKEN](args)
+        Handler()(Commands.TOKEN, args)
 
         # THEN output file should be exist
         assert Path(self.TOKENS_OUTPUT).exists()
@@ -305,7 +305,7 @@ class TestScenario:
         args = parser.parse_args([Commands.STORE, clue_path, "-f", self.TOKENS_OUTPUT, "-o", self.STORE_OUTPUT])
 
         # WHEN I call it
-        handlers[Commands.STORE](args)
+        Handler()(Commands.STORE, args)
 
         # THEN output file should be exist
         assert Path(self.TOKENS_OUTPUT).exists()
@@ -321,7 +321,7 @@ class TestScenario:
         )
 
         # WHEN I call it
-        handlers[Commands.RESTORE](args)
+        Handler()(Commands.RESTORE, args)
 
         # THEN output file should be exist
         assert Path(self.RESTORE_OUTPUT).exists()
@@ -337,7 +337,7 @@ class TestScenario:
         )
 
         # WHEN I call it
-        handlers[Commands.RESTORE](args)
+        Handler()(Commands.RESTORE, args)
 
         # THEN output file should be exist
         assert Path(self.RESTORE_OUTPUT).exists()

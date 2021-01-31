@@ -69,9 +69,7 @@ class LiteVaultClient(HttpUser):
             self.parser.parse_args(['read', '-f', 'store_output.json', '-o', 'restored_clues.txt']))
 
     def on_start(self):
-        """Prepare files
-        """
-
+        """Prepare files"""
         self.vpr_handler(
             'vpr',
             self.parser.parse_args(['vpr', '-e', 'lv-manager.iconscare.com', '-o', 'vpr.json']))
