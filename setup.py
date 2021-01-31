@@ -4,6 +4,16 @@ req_tests = ["pytest"]
 req_lint = ["flake8", "flake8-docstrings"]
 req_dev = req_tests + req_lint
 
+# You cannot access private repo('assam') in this way.
+# So we use setup.py directly without requirements.txt.
+# However, later assam becomes a public repo, you can use the code below.
+# with open('requirements.txt', 'r') as f:
+#     install_requires = [
+#         s for s in [
+#             line.split('#', 1)[0].strip(' \t\n') for line in f
+#         ] if s != ''
+#     ]
+
 setup_options = {
     "name": "TestTool",
     "version": "0.0.1",
@@ -13,6 +23,7 @@ setup_options = {
     "install_requires": [
         "requests",
         "Assam @ git+ssh://git@github.com/icon-project/Assam.git",  # noqa: E501
+        "locust"
     ],
     "extras_require": {
         "tests": req_tests,

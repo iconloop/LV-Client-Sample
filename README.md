@@ -55,3 +55,13 @@ OR run testing shell
 ```
 
 > Do not use this shell in QA testing. This is a humble script for handy testing
+
+
+## QA
+Using the 'locust' library for integration testing and automated QA.
+
+```
+$ locust -f locust_files/full_scenario.py
+```
+
+Connect to http://localhost:8089/ and test.
