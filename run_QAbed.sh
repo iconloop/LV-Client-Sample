@@ -8,8 +8,11 @@ fi
 
 # ===========================
 echo ""
+echo "GET VPR from LV-Manager"
+lv-tool vpr -e lv-manager.iconscare.com -o vpr.json
+cat vpr.json
 echo "GET Storages from LV-Manager"
-lv-tool vpr -e lv-manager.iconscare.com -o storages.json
+lv-tool vid -e lv-manager.iconscare.com -f vpr.json -o storages.json
 cat storages.json
 echo ""
 echo "GET Tokens from LV-Storages"

@@ -18,12 +18,14 @@ def init_parsers():
 
 def vpr_request(parser):
     """Request VPR."""
+    parser.add_argument("-d", "--debug", action='store_true', help="Run lv-tool in debug mode. (More log output)")
     parser.add_argument("-e", "--endpoint", required=True, help="Endpoint of LV Manager.")
     parser.add_argument("-o", "--output", required=True, help="Output path of results after VPR request.")
 
 
 def vid_request(parser):
     """Request VID and Storages with VP."""
+    parser.add_argument("-d", "--debug", action='store_true', help="Run lv-tool in debug mode. (More log output)")
     parser.add_argument("-e", "--endpoint", required=True, help="Endpoint of LV Manager.")
     parser.add_argument("-f", "--input", required=True, help="VPR")
     parser.add_argument("-o",
@@ -34,6 +36,7 @@ def vid_request(parser):
 
 def auth_token(parser):
     """Request token to Storages."""
+    parser.add_argument("-d", "--debug", action='store_true', help="Run lv-tool in debug mode. (More log output)")
     parser.add_argument("-f", "--input", required=True, help="VID RESPONSE message which contains info of storages.")
     parser.add_argument("-o", "--output", required=True, help="Token output after Storage authentication finished.")
 
@@ -41,6 +44,7 @@ def auth_token(parser):
 def write_clues(parser):
     """Write clue to given storages."""
     # parser.add_argument("clues", nargs="+", help="Clues to be stored")
+    parser.add_argument("-d", "--debug", action='store_true', help="Run lv-tool in debug mode. (More log output)")
     parser.add_argument("clues", help="Clue file to be stored")
     parser.add_argument("-f", "--input", required=True, help="Storage info with token.")
     parser.add_argument("-o", "--output", required=True, help="Stored info output after clues are stored.")
@@ -48,5 +52,6 @@ def write_clues(parser):
 
 def read_clues(parser):
     """Request clue by given vid."""
+    parser.add_argument("-d", "--debug", action='store_true', help="Run lv-tool in debug mode. (More log output)")
     parser.add_argument("-f", "--input", required=True, help="Storage info with clue vid and tag.")
     parser.add_argument("-o", "--output", required=True, help="Output path of requested clues.")

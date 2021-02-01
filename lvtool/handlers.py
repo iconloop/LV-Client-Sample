@@ -1,9 +1,12 @@
 import json
+import logging
 from typing import List
 
 from .helper import read_input_file, read_clue_file
 from .interfaces import Manager, Storage
 from .types import Commands
+
+logging.basicConfig(level=logging.INFO)
 
 
 class Handler:
@@ -27,7 +30,9 @@ class Handler:
         output_path = args.output
 
         manager = self.get_manager(endpoint=args.endpoint)
+        logging.debug("- Requesting VPR...")
         vpr: dict = manager.request_vpr()  # TODO: THIS should contain VPRequest.
+        logging.debug(f"- VPR Response: {vpr}")
         with open(output_path, "w") as f:
             f.write(json.dumps(vpr, indent=4))
 
@@ -35,8 +40,10 @@ class Handler:
         output_path = args.output
 
         manager = self.get_manager(endpoint=args.endpoint)
+        logging.debug("- Requesting VID...")
         vp = None  # TODO: Make VP by VPR from lv-manager.
         vid_response = manager.issue_vid_request(vp)  # TODO: Fill VID Request according to responded VPR!
+        logging.debug(f"- VID Response: {vid_response}")
 
         with open(output_path, "w") as f:
             f.write(json.dumps(vid_response, indent=4))
@@ -94,5 +101,8 @@ class Handler:
             Commands.STORE: self._handle_store,
             Commands.RESTORE: self._handle_read,
         }
+
+        if args.debug:
+            logging.getLogger().setLevel(logging.DEBUG)
 
         return handlers[command](args)
