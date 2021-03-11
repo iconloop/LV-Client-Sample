@@ -51,10 +51,11 @@ class Handler:
     def _handle_token(self, args):
         vid_response_msg: dict = read_input_file(args.input)
         storages: List[dict] = []
+        vID = vid_response_msg["vID"]
 
         for storage_info in vid_response_msg["storages"]:
             storage = self.get_storage(storage_info)
-            storage.token_request()
+            storage.token_request(vID)
             storages.append(storage.to_json())
 
         with open(args.output, "w") as f:

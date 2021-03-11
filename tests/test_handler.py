@@ -120,7 +120,7 @@ class TestScenario:
         # GIVEN I mocked Storage Server
         from lvtool.handlers import Storage
 
-        def mock_token_request(self):
+        def mock_token_request(self, vID: str):
             self._cek = jwk.JWK.generate(kty="oct")
             self._token = secrets.token_hex()
 
