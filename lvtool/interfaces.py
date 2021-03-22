@@ -117,10 +117,11 @@ class Storage:
         assert response.status_code == 200
         return response.text[1:-1]  # remove quotes...
 
-    def token_request(self) -> dict:
+    def token_request(self, vID) -> dict:
         payload = {
             "type": "TOKEN_REQUEST",
             "iat": 1111,
+            "vID": vID,
             "vp": {"dujmmy": "vp"}  # TODO:
         }
         jwe_token, cek = encrypt_jwe(self._key, payload)
