@@ -1,9 +1,9 @@
 # LV-Client-Sample
 
 # Requirements
-1. **gradle**
+1. **gradle** Only version 6.x supported!
 ~~~
-$ brew install gradle
+$ brew install gradle@6
 ~~~
 
 2. **Java Version 1.8**
