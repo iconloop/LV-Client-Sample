@@ -4,13 +4,13 @@ import requests
 from assam.jwt import encrypt_jwe, decrypt_jwe_with_cek, encrypt_jwe_with_cek
 from jwcrypto import jwk
 
-from .consts import manager_secp256k1_pubkey
+from .consts import manager_pubkey
 
 
 class Manager:
     def __init__(self, endpoint: str):
         self._endpoint: str = endpoint if "http://" in endpoint else f"http://{endpoint}"
-        self._key: jwk.JWK = jwk.JWK.from_json(manager_secp256k1_pubkey)
+        self._key: jwk.JWK = jwk.JWK.from_json(manager_pubkey)
 
     def _send(self, jwe_token):
         response = requests.post(f"{self._endpoint}/vault", headers={
