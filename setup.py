@@ -22,7 +22,7 @@ setup_options = {
     "python_requires": ">=3.9",
     "install_requires": [
         "requests",
-        "Assam @ git+ssh://git@github.com/icon-project/Assam.git",  # noqa: E501
+        "Assam @ git+ssh://git@github.com/iconloop/Assam.git",  # noqa: E501
         "locust"
     ],
     "extras_require": {
