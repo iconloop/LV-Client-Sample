@@ -10,9 +10,11 @@ import java.security.SecureRandom;
 
 
 public class Clue {
-    // FIXME: recoveryKey is Dummy code.
-    private static final String recoveryKey = "f660911567e08de702b01a819a2d1572";
-    private static final SecretKey _recoveryKey = new SecretKeySpec(recoveryKey.getBytes(), "AES");;
+    private final SecretKey _recoveryKey;
+
+    public Clue(String recoveryKey) {
+        this._recoveryKey = new SecretKeySpec(recoveryKey.getBytes(), "AES");
+    }
 
     public String[] makeClue(int storageNumber, int threshold, byte[] data) throws InvalidCipherTextException {
         SecretSharing ss = new SecretSharing(new SecureRandom(), storageNumber, threshold);
