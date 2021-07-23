@@ -1,19 +1,19 @@
 import logging
-import random
 from typing import List
 
 from locust_files.interfaces_locust import Manager, Storage
-from lvtool.helper import read_input_file, read_clue_file
+from lvtool.helper import read_clue_file
 from lvtool.types import Commands
 
 logging.basicConfig(level=logging.INFO)
 
 
 class Handler:
-    def __init__(self, locust_client):
+    def __init__(self, locust_client, phone_number):
         self.managers = {}
         self.storages = {}
         self._locust_client = locust_client
+        self._phone_number = phone_number
 
         self._vpr_response = None
         self._vid_response = None
@@ -46,8 +46,7 @@ class Handler:
         vp = None  # TODO: Make VP by VPR from lv-manager.
 
         # TODO: Fill VID Request according to responded VPR!
-        vid_response = manager.issue_vid_request(
-            phoneNumber=f"010{random.randrange(10000000, 99999999)}", vp=vp)
+        vid_response = manager.issue_vid_request(phone_number=self._phone_number, vp=vp)
         logging.debug(f"- VID Response: {vid_response}")
 
         self._vid_response = vid_response

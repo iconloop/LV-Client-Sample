@@ -12,11 +12,21 @@ class Manager:
         self._key: jwk.JWK = jwk.JWK.from_json(manager_pubkey)
         self._locust_client = locust_client
 
-    def _send(self, jwe_token, test_name):
+    def _send(self, jwe_token, test_name, cek=None):
         response = self._locust_client.post(f"{self._endpoint}/vault", headers={
             "Authorization": jwe_token
         }, name=test_name)
-        return response.text[1:-1]  # remove quotes...
+
+        response_ = response.text[1:-1]  # remove quotes....
+
+        if test_name == "VPR_0":
+            header, decrypt_response = decrypt_jwe_with_cek(response_, cek)
+
+            # print(f'decrypt_response({decrypt_response})')
+            if decrypt_response['vp_request'] == {}:
+                response.failure('There is no VP!')
+
+        return response_
 
     def request_vpr(self) -> dict:
         payload = {
@@ -25,14 +35,15 @@ class Manager:
             "did": "issuer did of phone auth"
         }
         jwe_token, cek = encrypt_jwe(self._key, payload)
-        tokenized_response = self._send(jwe_token, "VPR_0")
+        tokenized_response = self._send(jwe_token, "VPR_0", cek)
         header, backup_response = decrypt_jwe_with_cek(tokenized_response, cek)
 
         return backup_response
 
-    def issue_vid_request(self, phoneNumber, vp=None):
+    def issue_vid_request(self, phone_number, vp=None):
         """Request VID and Storages.
 
+        :param phone_number random phone number for load test virtual-user vID.
         :param vp: # TODO It must be replaced with a real client's one before starting the service.
         :return:
         """
@@ -64,7 +75,7 @@ class Manager:
                                 "salt": "345341c4b0cbff6bee9118da10d6e85a5"
                             },
                             "phoneNumber": {
-                                "claimValue": f"{phoneNumber}",
+                                "claimValue": f"{phone_number}",
                                 "salt": "a1341c4b0cbff6bee9118da10d6e85a5"
                             },
                             "connectionInformation": {

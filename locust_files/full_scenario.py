@@ -1,3 +1,4 @@
+import random
 from locust import HttpUser, task, between
 
 from locust_files.handlers_locust import Handler
@@ -9,7 +10,8 @@ class LiteVaultClient(HttpUser):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.lv_handler = Handler(self.client)
+        phone_number_for_vid = f"010{random.randrange(10000000, 99999999)}"
+        self.lv_handler = Handler(self.client, phone_number_for_vid)
         self.parser = init_parsers()
 
     @task(1)
